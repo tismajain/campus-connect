@@ -1,0 +1,83 @@
+name: Verify MVP
+on:
+  push:
+    branches: [main, feat/campus-connect-mvp]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: campus_connect
+          POSTGRES_USER: campus_ci
+          POSTGRES_PASSWORD: ephemeral-ci-database-only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U campus_ci -d campus_connect"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DB_URL: jdbc:postgresql://localhost:5432/campus_connect
+      DB_USERNAME: campus_ci
+      DB_PASSWORD: ephemeral-ci-database-only
+      FRONTEND_ORIGIN: http://localhost:3000
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate ephemeral admin credentials
+        run: |
+          echo "ADMIN_USERNAME=ci-admin" >> "$GITHUB_ENV"
+          ci_password=$(openssl rand -hex 24)
+          echo "::add-mask::$ci_password"
+          echo "ADMIN_PASSWORD=$ci_password" >> "$GITHUB_ENV"
+      - name: Backend tests and production package
+        working-directory: backend
+        run: mvn --batch-mode verify
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install
+      - name: TypeScript and production frontend build
+        working-directory: frontend
+        run: |
+          npm run build
+          npm run typecheck
+      - name: Dependency audit
+        working-directory: frontend
+        run: npm audit --omit=dev --audit-level=high
+      - name: Start API and wait for readiness
+        run: |
+          java -jar backend/target/campus-connect-0.0.1-SNAPSHOT.jar > /tmp/campus-api.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://localhost:8080/api/labs > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat /tmp/campus-api.log
+          exit 1
+      - name: Install browser and verify full student/admin flows
+        working-directory: frontend
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-evidence
+          path: |
+            backend/target/surefire-reports/
+            frontend/playwright-report/
+            frontend/test-results/
+            frontend/package-lock.json
+          retention-days: 7

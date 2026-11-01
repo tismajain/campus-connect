@@ -80,4 +80,19 @@ class ApiIntegrationTest {
   mvc.perform(get("/api/admin/session").with(httpBasic(user,password))).andExpect(status().isOk()).andExpect(header().doesNotExist("Set-Cookie"));
   mvc.perform(get("/api/labs")).andExpect(status().isOk()).andExpect(header().string("X-Content-Type-Options","nosniff")).andExpect(header().string("X-Frame-Options","DENY")).andExpect(header().string("Referrer-Policy","no-referrer")).andExpect(header().exists("Content-Security-Policy"));
  }
+ @Test void labAndSystemLifecycleAndBodyLimits() throws Exception {
+  long building=read("/api/labs").get(0).get("building").get("id").asLong();
+  var labBody=json.createObjectNode().put("buildingId",building).put("roomNumber","test-999").put("name","Test lab").put("status","RESTRICTED");
+  long labId=json.readTree(mvc.perform(post("/api/admin/labs").with(httpBasic(user,password)).contentType("application/json").content(labBody.toString())).andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).get("id").asLong();
+  mvc.perform(put("/api/admin/labs/"+labId).with(httpBasic(user,password)).contentType("application/json").content(labBody.put("status","MAINTENANCE").toString())).andExpect(status().isOk());
+  assertThat(read("/api/labs/"+labId).get("status").asText()).isEqualTo("MAINTENANCE");
+  var systemBody=json.createObjectNode().put("labId",labId).put("systemSummary","Test system").put("minRamGb",8).put("maxRamGb",16).put("hasGpu",false).put("sourceConfiguration","Test fixture");
+  long systemId=json.readTree(mvc.perform(post("/api/admin/lab-systems").with(httpBasic(user,password)).contentType("application/json").content(systemBody.toString())).andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).get("id").asLong();
+  mvc.perform(put("/api/admin/lab-systems/"+systemId).with(httpBasic(user,password)).contentType("application/json").content(systemBody.put("minRamGb",32).toString())).andExpect(status().isBadRequest());
+  mvc.perform(put("/api/admin/lab-systems/"+systemId).with(httpBasic(user,password)).contentType("application/json").content(systemBody.put("minRamGb",8).put("gpuMemoryGb",4).toString())).andExpect(status().isBadRequest());
+  mvc.perform(delete("/api/admin/lab-systems/"+systemId).with(httpBasic(user,password))).andExpect(status().isNoContent());
+  mvc.perform(post("/api/admin/software").with(httpBasic(user,password)).contentType("application/json").content(" ".repeat(65537))).andExpect(status().isPayloadTooLarge());
+  mvc.perform(get("/api/labs").secure(true)).andExpect(status().isOk()).andExpect(header().string("Strict-Transport-Security",org.hamcrest.Matchers.allOf(org.hamcrest.Matchers.containsString("max-age=31536000"),org.hamcrest.Matchers.containsString("includeSubDomains"))));
+ }
+
 }

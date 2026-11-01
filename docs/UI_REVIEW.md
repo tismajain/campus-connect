@@ -28,4 +28,4 @@ There was no prior frontend to screenshot. Review the implemented pages against 
 
 ## Render evidence
 
-Playwright captures desktop/mobile home, GPU results, lab detail and admin screens during the full-flow suite. Rendered review status is recorded in `VERIFICATION.md`; source review alone is not a rendered audit.
+Playwright captures desktop/mobile home, GPU results, lab detail and admin screens during the full-flow suite. The eight desktop/mobile home, GPU results, detail and sign-in renders from successful run [41325214113](https://github.com/tismajain/campus-connect/actions/runs/41325214113) were visually inspected. The signature location rule reads consistently, hardware figures remain visible on mobile, and no checklist slop signs remain. Form labels and navigation fit without page-level horizontal scrolling. The directory has deliberate short result lists rather than decorative space fillers. A second pass captures the signed-in table and system editor and verifies their keyboard focus behavior. See `VERIFICATION.md` for final run status.

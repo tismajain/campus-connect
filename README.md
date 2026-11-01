@@ -79,7 +79,7 @@ npm run test:e2e
 
 Playwright starts the production frontend. Desktop and mobile tests exercise student discovery, RAM edits through the admin UI, refreshed public detail, wrong credentials, memory-only login, escaped script-like resource text, and horizontal overflow. Test mutations are restored/deleted in `finally`. Screenshots of home, GPU results, detail and admin are saved under `frontend/test-results/screenshots/`.
 
-`.github/workflows/verify.yml` runs these checks with PostgreSQL, Java 21, Node 22 and ephemeral admin credentials. The build environment used for initial authoring has no Java/Maven/browser or network access to npm; see `docs/VERIFICATION.md` for actual run evidence and remaining limits. Do not equate the existence of tests with passing results.
+`.github/workflows/verify.yml` runs these checks with PostgreSQL, Java 21, Node 22 and ephemeral admin credentials. The authoring sandbox lacks Java/Maven/browser and npm network access, so builds and full-flow checks were executed successfully in GitHub Actions. See `docs/VERIFICATION.md` for run evidence and deployment limits.
 
 ## Deployment and security
 

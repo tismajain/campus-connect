@@ -1,0 +1,21 @@
+import Link from "next/link";
+import Search from "@/components/Search";
+import {LabRow,SoftwareRow,EquipmentRow} from "@/components/Resources";
+import {api,Lab,Software,Equipment} from "@/lib/api";
+export const dynamic="force-dynamic";
+type Params={q?:string;type?:string;building?:string;gpu?:string;minRam?:string};
+export default async function Explore({searchParams}:{searchParams:Promise<Params>}){
+ const p=await searchParams;const q=(p.q||"").trim();const type=["labs","software","equipment"].includes(p.type||"")?p.type!:"all";
+ const labQuery=new URLSearchParams({q});if(p.building)labQuery.set("building",p.building);if(p.gpu==="true")labQuery.set("gpu","true");if(p.minRam)labQuery.set("minRam",p.minRam);
+ const labsOnly=!!(p.building||p.gpu==="true"||p.minRam);let labs:Lab[]=[],software:Software[]=[],equipment:Equipment[]=[],error="";
+ try {
+  if(q.length>100)throw new Error("Search must be 100 characters or fewer");
+  [labs,software,equipment]=await Promise.all([
+   type==="all"||type==="labs"?api<Lab[]>(`/labs?${labQuery}`):Promise.resolve([]),
+   (type==="all"&&!labsOnly)||type==="software"?api<Software[]>(`/software?q=${encodeURIComponent(q)}`):Promise.resolve([]),
+   (type==="all"&&!labsOnly)||type==="equipment"?api<Equipment[]>(`/equipment?q=${encodeURIComponent(q)}`):Promise.resolve([])
+  ]);
+ }catch(e){error=e instanceof Error?e.message:"Unable to load the directory";}
+ const count=labs.length+software.length+equipment.length;
+ return <div className="page"><div className="page-heading"><p className="eyebrow">Campus inventory</p><h1>Explore resources</h1><p className="lead">Search specifications, subject software and embedded equipment</p></div><Search query={q}/><div className="explore-layout"><aside className="filter-panel"><form action="/explore"><input type="hidden" name="q" value={q}/><h2>Refine results</h2><label>Resource type<select name="type" defaultValue={type}><option value="all">All resources</option><option value="labs">Labs & hardware</option><option value="software">Software by subject</option><option value="equipment">Equipment</option></select></label><fieldset><legend>Lab filters</legend><label>Building<select name="building" defaultValue={p.building||""}><option value="">All buildings</option><option>AB4</option><option>AB5</option></select></label><label>Minimum RAM<select name="minRam" defaultValue={p.minRam||""}><option value="">Any RAM</option><option value="8">8 GB or more</option><option value="16">16 GB or more</option><option value="32">32 GB or more</option><option value="64">64 GB or more</option></select></label><label className="checkbox"><input type="checkbox" name="gpu" value="true" defaultChecked={p.gpu==="true"}/>GPU-equipped only</label><p className="caption">Building, RAM and GPU filters apply to labs</p></fieldset><button type="submit">Apply filters</button><Link className="quiet-link" href="/explore">Clear filters</Link></form></aside><section aria-label="Search results"><div className="section-heading"><h2>{q?`Results for “${q}”`:"Resource directory"}</h2>{!error&&<span className="caption">{count} {count===1?"result":"results"}</span>}</div>{error?<div className="notice error" role="alert"><p>{error}</p><Link href={`/explore?${new URLSearchParams(Object.entries(p).filter((entry):entry is [string,string]=>typeof entry[1]==="string"))}`}>Try again</Link></div>:!count?<div className="notice"><h3>No matching resources</h3><p>Try a building, room, system name or subject such as Computer Vision</p><Link href="/explore">Reset search and filters</Link></div>:<>{labs.length>0&&<section className="result-section"><h3 className="result-label">Labs & hardware</h3><div className="resource-list">{labs.map(l=><LabRow key={l.id} lab={l}/>)}</div></section>}{software.length>0&&<section className="result-section"><h3 className="result-label">Software used by subjects</h3><p className="caption section-note">Subject mappings do not confirm physical installation in any lab</p><div className="resource-list">{software.map(s=><SoftwareRow key={s.id} item={s}/>)}</div></section>}{equipment.length>0&&<section className="result-section"><h3 className="result-label">Equipment</h3><div className="resource-list">{equipment.map(e=><EquipmentRow key={e.id} item={e}/>)}</div></section>}</>}</section></div></div>;
+}

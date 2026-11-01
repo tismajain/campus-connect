@@ -23,10 +23,10 @@ test("admin system edit persists and resource text is escaped",async({page,reque
  const body={labId:lab.id,systemSummary:system.systemSummary,minRamGb:system.minRamGb,maxRamGb:system.maxRamGb,hasGpu:system.hasGpu,gpuMemoryGb:system.gpuMemoryGb,sourceConfiguration:system.sourceConfiguration};
  let createdId:number|undefined;
  try{
-  await page.goto("/admin");await page.getByLabel("Username").fill(process.env.ADMIN_USERNAME!);await page.getByLabel("Password").fill("incorrect");await page.getByRole("button",{name:"Sign in",exact:true}).click();await expect(page.getByRole("alert")).toHaveText("Invalid credentials");
+  await page.goto("/admin");await page.getByLabel("Username").fill(process.env.ADMIN_USERNAME!);await page.getByLabel("Password").fill("incorrect");await page.getByRole("button",{name:"Sign in",exact:true}).click();await expect(page.getByRole("alert").filter({hasText:"Invalid credentials"})).toHaveText("Invalid credentials");
   await page.getByLabel("Password").fill(process.env.ADMIN_PASSWORD!);await page.getByRole("button",{name:"Sign in",exact:true}).click();await page.getByRole("button",{name:"Lab systems",exact:true}).click();
   const row=page.getByRole("row").filter({hasText:"AB4 · 406"});await row.getByRole("button",{name:"Edit AB4 · 406"}).click();
-  await page.getByLabel("Minimum RAM (GB)").fill("32");await page.getByLabel("Maximum RAM (GB)").fill("32");await page.getByRole("button",{name:"Save changes"}).click();await expect(page.getByRole("status")).toHaveText("Saved to the campus directory");
+  await page.getByLabel("Minimum RAM (GB)").fill("32");await page.getByLabel("Maximum RAM (GB)").fill("32");await page.getByRole("button",{name:"Save changes"}).click();await expect(page.getByRole("status").filter({hasText:"Saved to the campus directory"})).toHaveText("Saved to the campus directory");
   await page.goto(`/labs/${lab.id}`);await page.reload();await expect(page.getByText("32 GB RAM",{exact:true})).toBeVisible();
   await page.goto("/admin");await expect(page.getByRole("heading",{name:"Admin sign in",exact:true})).toBeVisible();
   const text="<script>window.resourceXssExecuted=true</script>";

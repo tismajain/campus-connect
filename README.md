@@ -41,7 +41,7 @@ Start the frontend in terminal 2:
 ```sh
 cd frontend
 cp .env.example .env.local
-npm install
+npm ci
 npm run dev
 ```
 
@@ -68,7 +68,7 @@ Tests use the real PostgreSQL schema/migrations with transactional rollback. The
 
 ```sh
 cd frontend
-npm install
+npm ci
 npm run build
 npm run typecheck
 npm audit --omit=dev --audit-level=high

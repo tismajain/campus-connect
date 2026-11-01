@@ -47,7 +47,9 @@ jobs:
         run: mvn --batch-mode verify
       - name: Install frontend dependencies
         working-directory: frontend
-        run: npm install
+        run: |
+          npm install
+          node -e "console.log('DEPENDENCY_LOCK:'+require('node:zlib').gzipSync(require('node:fs').readFileSync('package-lock.json')).toString('base64'))"
       - name: TypeScript and production frontend build
         working-directory: frontend
         run: |

@@ -15,6 +15,7 @@ test("student discovery, specifications and subject-only software",async({page},
   await page.goto(path);await page.locator("h1").waitFor();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
   mkdirSync("test-results/screenshots",{recursive:true});await page.screenshot({path:`test-results/screenshots/${testInfo.project.name}-${name}.png`,fullPage:true});
+  const preview=await page.screenshot({type:"jpeg",quality:65,fullPage:true});console.log(`UI_RENDER:${testInfo.project.name}-${name}:${preview.toString("base64")}`);
  }
 });
 test("admin system edit persists and resource text is escaped",async({page,request})=>{

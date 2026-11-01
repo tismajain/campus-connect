@@ -19,7 +19,7 @@ public class SecurityConfig {
   var encoder=PasswordEncoderFactories.createDelegatingPasswordEncoder();
   return new InMemoryUserDetailsManager(User.withUsername(username).password(encoder.encode(password)).roles("ADMIN").build());
  }
- @Bean CorsConfigurationSource cors(@Value("${FRONTEND_ORIGIN:http://localhost:3000}") String origin) {
+ @Bean CorsConfigurationSource corsConfigurationSource(@Value("${FRONTEND_ORIGIN:http://localhost:3000}") String origin) {
   var uri=java.net.URI.create(origin);
   if(!List.of("http","https").contains(uri.getScheme()) || uri.getHost()==null || origin.contains("*") || (uri.getPath()!=null && !uri.getPath().isEmpty()) || uri.getQuery()!=null || uri.getFragment()!=null || uri.getUserInfo()!=null) throw new IllegalArgumentException("FRONTEND_ORIGIN must be one exact origin");
   var config=new CorsConfiguration(); config.setAllowedOrigins(List.of(origin));

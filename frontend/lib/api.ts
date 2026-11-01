@@ -26,4 +26,4 @@ export function ram(system:System) {
  if(system.minRamGb===null && system.maxRamGb===null)return "RAM not recorded";
  return `${system.minRamGb ?? system.maxRamGb}${system.maxRamGb!==null && system.minRamGb!==null && system.minRamGb!==system.maxRamGb ? `–${system.maxRamGb}` : ""} GB RAM`;
 }
-export function statusLabel(status:string){return status.toLowerCase().replaceAll("_"," ");}
+export function statusLabel(status:string){const text=status.toLowerCase().replaceAll("_"," ");return text.charAt(0).toUpperCase()+text.slice(1);}

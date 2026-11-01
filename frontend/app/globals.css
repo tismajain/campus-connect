@@ -70,7 +70,7 @@ nav a { color:var(--secondary); padding:8px 0; font-size:14px; }
 .resource .caption { font-size:13px; margin-top:8px; }
 .location { display:inline-block; color:var(--accent); border-left:3px solid var(--accent); padding:4px 12px; background:#edf2f5; font-size:14px; font-weight:500; font-variant-numeric:tabular-nums; white-space:nowrap; }
 .specs { color:var(--secondary); font-variant-numeric:tabular-nums; }
-.status { font-size:13px; color:var(--secondary); text-transform:capitalize; white-space:nowrap; }
+.status { font-size:13px; color:var(--secondary); white-space:nowrap; }
 .row-link { white-space:nowrap; font-size:14px; }
 .page-heading { margin-bottom:24px; }
 .page-heading+.search { max-width:100%; }

@@ -15,7 +15,6 @@ test("student discovery, specifications and subject-only software",async({page},
   await page.goto(path);await page.locator("h1").waitFor();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
   mkdirSync("test-results/screenshots",{recursive:true});await page.screenshot({path:`test-results/screenshots/${testInfo.project.name}-${name}.png`,fullPage:true});
-  const preview=await page.screenshot({type:"jpeg",quality:65,fullPage:true});console.log(`UI_RENDER:${testInfo.project.name}-${name}:${preview.toString("base64")}`);
  }
 });
 test("admin system edit persists and resource text is escaped",async({page,request},testInfo)=>{
@@ -26,10 +25,8 @@ test("admin system edit persists and resource text is escaped",async({page,reque
   await page.goto("/admin");await page.getByLabel("Username").fill(process.env.ADMIN_USERNAME!);await page.getByLabel("Password").fill("incorrect");await page.getByRole("button",{name:"Sign in",exact:true}).click();await expect(page.getByRole("alert").filter({hasText:"Invalid credentials"})).toHaveText("Invalid credentials");
   await page.getByLabel("Password").fill(process.env.ADMIN_PASSWORD!);await page.getByRole("button",{name:"Sign in",exact:true}).click();await page.getByRole("button",{name:"Lab systems",exact:true}).click();
   await page.screenshot({path:`test-results/screenshots/${testInfo.project.name}-admin-table.png`,fullPage:false});
-  console.log(`UI_RENDER:${testInfo.project.name}-admin-table:${(await page.screenshot({type:"jpeg",quality:65,fullPage:false})).toString("base64")}`);
   const row=page.getByRole("row").filter({hasText:"AB4 · 406"});await row.getByRole("button",{name:"Edit AB4 · 406"}).click();
   await page.locator(".editor").screenshot({path:`test-results/screenshots/${testInfo.project.name}-admin-editor.png`});
-  console.log(`UI_RENDER:${testInfo.project.name}-admin-editor:${(await page.locator(".editor").screenshot({type:"jpeg",quality:65})).toString("base64")}`);
   await page.getByLabel("Minimum RAM (GB)").fill("32");await page.getByLabel("Maximum RAM (GB)").fill("32");await page.getByRole("button",{name:"Save changes"}).click();await expect(page.getByRole("status").filter({hasText:"Saved to the campus directory"})).toHaveText("Saved to the campus directory");
   await page.goto(`/labs/${lab.id}`);await page.reload();await expect(page.getByText("32 GB RAM",{exact:true})).toBeVisible();
   await page.goto("/admin");await expect(page.getByRole("heading",{name:"Admin sign in",exact:true})).toBeVisible();

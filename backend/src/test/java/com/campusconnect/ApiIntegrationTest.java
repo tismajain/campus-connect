@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
-@SpringBootTest @AutoConfigureMockMvc @Transactional
+@SpringBootTest @AutoConfigureMockMvc(print=org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint.NONE) @Transactional
 class ApiIntegrationTest {
  @Autowired MockMvc mvc; @Autowired ObjectMapper json; @Autowired LabSystemRepository systems;
  @Autowired jakarta.persistence.EntityManager entityManager;

@@ -91,7 +91,7 @@ Only `NEXT_PUBLIC_API_BASE_URL` is public. Set it at frontend build time to the 
 
 Keep PostgreSQL private. For production, run Flyway with a dedicated migration owner, then run the API with a separate restricted runtime role: CONNECT to this DB, USAGE on the application schema, SELECT/INSERT/UPDATE/DELETE on resource/join tables, SELECT on `flyway_schema_history`, and USAGE/SELECT on relevant sequences. Set `SPRING_FLYWAY_ENABLED=false` for the runtime process after migrations. Do not grant schema creation or database ownership to the runtime role. The local owner account above simplifies first-run setup only.
 
-Spring supplies nosniff, frame denial and HSTS; both services set CSP and referrer policy. Next's CSP allows its framework's inline hydration scripts; database text is never rendered as HTML. Apply request-size limits (64 KB admin JSON is sufficient), request/connection timeouts, and rate limits at the deployment proxy. Keep platform logs free of Authorization headers. There is no live occupancy, booking, map, or inferred software installation feature.
+Spring supplies nosniff, frame denial and HSTS; both services set CSP and referrer policy. Next's CSP allows its framework's inline hydration scripts; database text is never rendered as HTML. The API caps mutation bodies at 64 KB, including chunked requests. Also apply request/connection timeouts and rate limits at the deployment proxy. Keep platform logs free of Authorization headers. There is no live occupancy, booking, map, or inferred software installation feature.
 
 ## UI review
 

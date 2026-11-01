@@ -11,7 +11,8 @@ public class PublicController {
  static boolean contains(String text,String q){return text!=null && text.toLowerCase(Locale.ROOT).contains(q);}
  static boolean matches(Lab lab,String q){
   if(q.isEmpty())return true;
-  if(contains(lab.building.code+" "+lab.roomNumber+" "+lab.building.code+"-"+lab.roomNumber+" "+lab.name+" "+lab.description,q))return true;
+  if(q.equals("gpu"))return lab.systems.stream().anyMatch(s->s.hasGpu);
+  if(contains(lab.building.code+" "+lab.roomNumber+" "+lab.building.code+"-"+lab.roomNumber+" "+Objects.toString(lab.name,"")+" "+Objects.toString(lab.description,""),q))return true;
   return lab.systems.stream().anyMatch(s->contains(s.systemSummary,q)||contains(s.sourceConfiguration,q)||(q.equals("gpu")&&s.hasGpu));
  }
  List<Lab> findLabs(String q,String building,Boolean gpu,Integer minRam){

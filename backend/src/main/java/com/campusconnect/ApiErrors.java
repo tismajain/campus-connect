@@ -23,7 +23,7 @@ public class ApiErrors {
   org.springframework.web.bind.MissingServletRequestParameterException.class})
  ResponseEntity<?> invalid(Exception ex) {return error(400,"Invalid request; check field values and limits");}
  @ExceptionHandler(DataIntegrityViolationException.class) ResponseEntity<?> conflict(Exception ex) {return error(409,"Resource conflicts with existing data");}
- @ExceptionHandler(org.springframework.web.servlet.NoResourceFoundException.class) ResponseEntity<?> missing(Exception ex) {return error(404,"Resource not found");}
+ @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class) ResponseEntity<?> missing(Exception ex) {return error(404,"Resource not found");}
  @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class) ResponseEntity<?> method(Exception ex) {return error(405,"Method not allowed");}
  @ExceptionHandler(Exception.class) ResponseEntity<?> unexpected(Exception ex) {
   LoggerFactory.getLogger(ApiErrors.class).error("Unhandled API failure",ex); return error(500,"Unable to complete request");

@@ -1,0 +1,61 @@
+subject_code,subject_name,software
+DSD,DSD,Vivado
+DBS,DBS,Oracle 11g
+DBS,DBS,Eclipse
+ES,Embedded System,Keil
+ES,Embedded System,Flash Magic
+WP,Web Programming,VS Code
+WP,Web Programming,Python
+WP,Web Programming,Node.js
+WP,Web Programming,jQuery
+OS,Operating System,Ubuntu
+CD,Compiler Design,Ubuntu
+PR,Parallel Programming,Anaconda
+PR,Parallel Programming,Jupyter Notebook
+OOPS,OOPS,Eclipse
+DV,DV,Anaconda
+PSUC,PSUC,Code::Blocks
+PPS,PPS,Code::Blocks
+CSF,CSF,Kali Linux
+ML,Machine Learning,Anaconda
+NDL,NDL,Anaconda
+NLP,Natural Language Processing,Anaconda
+NLP,Natural Language Processing,Jupyter Notebook
+CV,Computer Vision,Anaconda
+CV,Computer Vision,PyCharm
+CV,Computer Vision,OpenCV
+SE,Software Engineering,Dia
+SE,Software Engineering,StarUML
+BDA,BDA,Ubuntu
+OOSD,OOSD,Eclipse
+DM,Data Mining,Anaconda
+DM,Data Mining,Weka
+AT,AT,Android Studio
+AC,Advanced Cryptography,Ubuntu
+AC,Advanced Cryptography,Python
+DS,Data Structures,Code::Blocks
+DAA,Design and Analysis of Algorithms,Code::Blocks
+CN,Computer Networks,Ubuntu
+CN,Computer Networks,GNS3
+CN,Computer Networks,Wireshark
+AI,Artificial Intelligence,Anaconda
+NTC,NTC,Ubuntu
+NTC,NTC,Python
+NTC,NTC,Java
+PCAP,PCAP,CUDA
+DF,Digital Forensics,Kali Linux
+DF,Digital Forensics,Autopsy
+IRTI,IRTI,Kali Linux
+IRTI,IRTI,Metasploitable 2
+IS,IS,VS Code
+IS,IS,Python
+IS,IS,Node.js
+IS,IS,jQuery
+FML,FML,Anaconda
+POS,POS,Ubuntu
+WSMA,WSMA,Anaconda
+DPV,DPV,Anaconda
+CLOUD_DEVOPS,Cloud Computing and DevOps,Docker Desktop
+CLOUD_DEVOPS,Cloud Computing and DevOps,Oracle VirtualBox
+CLOUD_DEVOPS,Cloud Computing and DevOps,Terraform
+CLOUD_DEVOPS,Cloud Computing and DevOps,VS Code
